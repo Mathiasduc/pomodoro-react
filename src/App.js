@@ -1,28 +1,42 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Counter from './Counter'
 
 
-class Counter extends Component{
+class Input extends Component{
   constructor(props) {
     super(props);
-    this.state = {timer: props.timer, refresh: props.refresh}; 
+    this.state = {
+      value: '',
+    };
+    this.onChange = this.onChange.bind(this);
   }
-  componentDidMount() {
-    this.timerInterval = setInterval(
-      () => this.refreshDate(),
-      this.state.refresh
-      );
+  onChange(event){
+    this.setState({value: event.target.value});
+    if (this.props.callback){
+      this.props.callback();
+    }
   }
-  componentWillUnmount() {
-    clearInterval(this.timerInterval);
+
+  render() {
+    return(
+      <input type="text" value={this.state.value} onChange={this.props.onChange} />
+      );  
   }
-  refreshDate(){
-    this.setState((prevState)=>({timer: prevState.timer - 1}));
+}
+
+class SetTimeForm extends Component{
+  constructor(props) {
+    super(props);
+    this.setTime = this.setTime.bind(this);
+  }
+  setTime(event){
+    console.log(event.target.value)
   }
   render() {
     return(
-      <h1>{this.state.timer.toString()}</h1>
+      <Input callback={this.setTime}/>
       );
   }
 }
@@ -35,7 +49,8 @@ class App extends Component {
       <img src={logo} className="App-logo" alt="logo" />
       <h2>Welcome to React</h2>
       </div>
-      <Counter timer= {3600} refresh={1000}/>  
+      <Counter timer={3600} refresh={1000}/>
+      <SetTimeForm/>
       </div>
       );
   }
