@@ -14,14 +14,13 @@ class Input extends Component{
   }
   onChange(event){
     this.setState({value: event.target.value});
-    if (this.props.callback){
-      this.props.callback();
+    if (this.props.onChange){
+      this.props.onChange(event);
     }
   }
-
   render() {
     return(
-      <input type="text" value={this.state.value} onChange={this.props.onChange} />
+      <input type="text" value={this.state.value} onChange={this.onChange} />
       );  
   }
 }
@@ -29,19 +28,44 @@ class Input extends Component{
 class SetTimeForm extends Component{
   constructor(props) {
     super(props);
-    this.setTime = this.setTime.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
-  setTime(event){
-    console.log(event.target.value)
+  onChange(event){
+    if (this.props.onInputChange) {
+      this.props.onInputChange(event);
+    }
+  }
+  onSubmit(event){
+    this.props.onSubmit(event);
   }
   render() {
     return(
-      <Input callback={this.setTime}/>
+      <form onSubmit={this.onSubmit}>
+      <Input onChange={this.onChange}/>
+      <button action={this.start}>Start</button>
+      </form>
       );
   }
 }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      timer: 360,
+      refresh: 1000,
+    }
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+
+  }
+  onSubmit(event){
+    event.preventDefault();
+    console.log(event);
+    this.setState({timer: parseInt(event.target.value, 10)}); 
+  }
+
   render() {
     return (
       <div className="App">
@@ -49,8 +73,8 @@ class App extends Component {
       <img src={logo} className="App-logo" alt="logo" />
       <h2>Welcome to React</h2>
       </div>
-      <Counter timer={3600} refresh={1000}/>
-      <SetTimeForm/>
+      <Counter timer={this.state.timer} refresh={this.state.refresh}/>
+      <SetTimeForm onSubmit={this.onSubmit}/>
       </div>
       );
   }
