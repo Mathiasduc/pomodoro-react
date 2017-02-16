@@ -4,24 +4,26 @@ export default class Counter extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      timer: props.timer,
-      refresh: props.refresh,
-      toggleBool: props.toggleBool,
+      timer: 300,
+      refresh: 1000,
+      toggleBool: false,
     };
   }
   componentWillReceiveProps(nextProps){
-    if(nextProps.toggleBool !== this.props.toggleBool){
-      this.props.toggleBool? clearInterval(this.timerInterval): this.startInterval();
-      this.state.toggleBool = this.props.toggleBool;
+  console.log(nextProps);
+    if(nextProps.toggleBool !== this.state.toggleBool){
+      console.log('different');
+      nextProps.toggleBool? this.startInterval(): clearInterval(this.timerInterval);
+      this.setState({toggleBool:nextProps.toggleBool});
     }
     if(nextProps.timer !== this.props.timer){
       clearInterval(this.timerInterval);
-      this.state.timer = nextProps.timer;
+      this.setState({timer: nextProps.timer});
     }  
   }
   
   componentDidMount() {
-    this.startInterval();
+    this.setState({timer: this.props.timer, refresh: this.props.refresh, toggleBool: this.props.toggleBool});
   }
   componentWillUnmount() {
     clearInterval(this.timerInterval);

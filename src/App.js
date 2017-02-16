@@ -28,7 +28,7 @@ class Input extends Component{
 class SetTime extends Component{
   constructor(props){
     super(props);
-    this.state = {stateButton: this.props.toggleBool, textButton: "Stop" };
+    this.state = {stateButton: this.props.toggleBool, textButton: "Start" };
   }
   componentWillReceiveProps(nextProps){
     if(nextProps.stateButton){
@@ -52,13 +52,14 @@ class App extends Component {
     this.state = {
       timer: 300,
       refresh: 1000,
-      toggleBool: true,
+      toggleBool: false,
     };
     this.togglePause = this.togglePause.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
   }
 
   onInputChange(event){
+    this.setState({toggleBool : false});
     this.setState({timer: parseInt(event.target.value, 10)});
   }
 
