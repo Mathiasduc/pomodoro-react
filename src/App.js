@@ -14,8 +14,8 @@ class Input extends Component{
   }
   onChange(event){
     this.setState({value: event.target.value});
-    if (this.props.onChange){
-      this.props.onChange(event);
+    if (this.props.onInputChange){
+      this.props.onInputChange(event);
     }
   }
   render() {
@@ -25,58 +25,59 @@ class Input extends Component{
   }
 }
 
-class SetTimeForm extends Component{
-  constructor(props) {
+class SetTime extends Component{
+  constructor(props){
     super(props);
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    this.state = {stateButton: this.props.toggleBool, textButton: "Stop" };
   }
-  onChange(event){
-    if (this.props.onInputChange) {
-      this.props.onInputChange(event);
+  componentWillReceiveProps(nextProps){
+    if(nextProps.stateButton){
+      this.setState({textButton: "Stop"});
+    }else {
+      this.setState({textButton: "Start"});
     }
-  }
-  onSubmit(event){
-    this.props.onSubmit(event);
   }
   render() {
     return(
-      <form onSubmit={this.onSubmit}>
-      <Input onChange={this.onChange}/>
-      <button action={this.start}>Start</button>
-      </form>
+      <div>
+        <Input onInputChange={this.props.onInputChange}/>
+        <button onClick={this.props.clickButtonHandler}>{this.state.textButton}</button>
+      </div>
       );
   }
 }
-
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      timer: 360,
+      timer: 300,
       refresh: 1000,
-    }
+      toggleBool: true,
+    };
+    this.togglePause = this.togglePause.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-
   }
-  onSubmit(event){
-    event.preventDefault();
-    console.log(event);
-    this.setState({timer: parseInt(event.target.value, 10)}); 
+
+  onInputChange(event){
+    this.setState({timer: parseInt(event.target.value, 10)});
+  }
+
+  togglePause(){
+    const changedToggle = this.state.toggleBool ? false : true;
+    this.setState({toggleBool : changedToggle});
   }
 
   render() {
     return (
       <div className="App">
-      <div className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <h2>Welcome to React</h2>
+        <div className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h2>Welcome to React</h2>
+        </div>
+        <Counter toggleBool={this.state.toggleBool} timer={this.state.timer} refresh={this.state.refresh}/>
+        <SetTime stateButton={this.state.toggleBool} clickButtonHandler={this.togglePause} onSubmit={this.onSubmit} onInputChange={this.onInputChange}/>
       </div>
-      <Counter timer={this.state.timer} refresh={this.state.refresh}/>
-      <SetTimeForm onSubmit={this.onSubmit}/>
-      </div>
-      );
+    );
   }
 }
 
